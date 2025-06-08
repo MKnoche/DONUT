@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg2"
+   width="18.887512"
+   height="6.2842407"
+   viewBox="0 0 18.887512 6.2842407"
+   sodipodi:docname="DONUT.pdf"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs6" />
+  <sodipodi:namedview
+     id="namedview4"
+     pagecolor="#ffffff"
+     bordercolor="#999999"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false" />
+  <g
+     id="g8"
+     inkscape:groupmode="layer"
+     inkscape:label="DONUT"
+     transform="matrix(1.3333333,0,0,-1.3333333,-271.52933,775.60101)">
+    <g
+       id="g758"
+       transform="translate(203.647,577.073)"
+       inkscape:export-filename="arrow_grey.svg"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96">
+      <g
+         id="g760" />
+      <g
+         id="g762">
+        <g
+           id="g764">
+          <path
+             d="m 0,2.83484 c 5.63686,0 8.87646,-0.90691 10.31104,-1.42902"
+             style="fill:none;stroke:#9c9e9f;stroke-width:0.79701;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+             id="path766" />
+          <g
+             id="g768"
+             transform="matrix(0.93967,-0.34203,0.34203,0.93967,7.99469,2.24896)">
+            <g
+               id="g770">
+              <path
+                 d="M 5.44046,0 1.28699,1.5706 2.66432,0 1.28699,-1.5706 Z"
+                 style="fill:#9c9e9f;fill-opacity:1;fill-rule:nonzero;stroke:#9c9e9f;stroke-width:0.79701;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:10;stroke-dasharray:none;stroke-opacity:1"
+                 id="path772" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

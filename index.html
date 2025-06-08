@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html data-theme="light">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="description"
+    content="Predicting the motion of other agents in a scene is highly relevant for autonomous driving, as it allows a self-driving car to anticipate. Inspired by the success of decoder-only models for language modeling, we propose DONUT, a Decoder-Only Network for Unrolling Trajectories. Different from existing encoder-decoder forecasting models, we encode historical trajectories and predict future trajectories with a single autoregressive model. This allows the model to make iterative predictions in a consistent manner, and ensures that the model is always provided with up-to-date information, enhancing the performance. Furthermore, inspired by multi-token prediction for language modeling, we introduce an 'overprediction' strategy that gives the network the auxiliary task of predicting trajectories at longer temporal horizons. This allows the model to better anticipate the future, and further improves the performance. With experiments, we demonstrate that our decoder-only approach outperforms the encoder-decoder baseline, and achieves new state-of-the-art results on the Argoverse 2 single-agent motion forecasting benchmark." />
+  <meta name="keywords"
+    content="Motion Forecasting, Decoder-Only, Argoverse 2, Autoregressive" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>
+    DONUT: A Decoder-Only Model for Trajectory Prediction
+  </title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css" />
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" />
+  <link rel="stylesheet" href="./static/css/index.css" />
+  <link rel="icon" href="./static/images/favicon.svg" />
+
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+</head>
+
+<body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              DONUT: A Decoder-Only Model for Trajectory Prediction
+            </h1>
+            <!-- <div class="title is-4 publication-title">
+                VENUE</span>
+              </div> -->
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=Kx4v8IMAAAAJ&hl=de">Markus Knoche</a><sup>1</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://daandegeus.com">Daan de Geus</a><sup>1,2</sup>
+              </span>
+              <span class="author-block">
+                <a href="https://scholar.google.com/citations?user=ZcULDB0AAAAJ">Bastian Leibe</a><sup>1</sup>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>RWTH Aachen University</span>
+              <span class="author-block"><sup>2</sup>Eindhoven University of Technology</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- arXiv PDF. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=DONUT&terms-0-field=title&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=exclude&date-year=&date-filter_by=date_range&date-from_date=2025-06-06&date-to_date=2025-06-11&date-date_type=submitted_date&abstracts=show&size=50&order=-announced_date_first" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper (soon)</span>
+                  </a>
+                </span>
+
+                <!-- arXiv abstract. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/search/advanced?advanced=&terms-0-operator=AND&terms-0-term=DONUT&terms-0-field=title&classification-computer_science=y&classification-physics_archives=all&classification-include_cross_list=exclude&date-year=&date-filter_by=date_range&date-from_date=2025-06-06&date-to_date=2025-06-11&date-date_type=submitted_date&abstracts=show&size=50&order=-announced_date_first" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv (soon)</span>
+                  </a>
+                </span>
+
+                <!-- GitHub. -->
+                <span class="link-block">
+                  <a href="https://github.com/MKnoche/DONUT" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (soon)</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered is-6">
+        <div class="column">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Predicting the motion of other agents in a scene is highly
+              relevant for autonomous driving, as it allows a self-driving car
+              to anticipate. Inspired by the success of decoder-only models for
+              language modeling, we propose DONUT, a Decoder-Only Network for
+              Unrolling Trajectories. Different from existing encoder-decoder
+              forecasting models, we encode historical trajectories and predict
+              future trajectories with a single autoregressive model. This
+              allows the model to make iterative predictions in a consistent
+              manner, and ensures that the model is always provided with
+              up-to-date information, enhancing the performance. Furthermore,
+              inspired by multi-token prediction for language modeling, we
+              introduce an 'overprediction' strategy that gives the network the
+              auxiliary task of predicting trajectories at longer temporal
+              horizons. This allows the model to better anticipate the future,
+              and further improves the performance. With experiments, we
+              demonstrate that our decoder-only approach outperforms the
+              encoder-decoder baseline, and achieves new state-of-the-art
+              results on the Argoverse 2 single-agent motion forecasting
+              benchmark.
+            </p>
+          </div>
+        </div>
+        <div class="column has-text-centered">
+          <figure style="max-width: 100%; margin: 0 auto">
+            <img src="static/img/DONUT_teaser.webp" alt="Encoder-decoder vs. decoder-only methods for motion forecasting." style="width: 100%; height: auto" />
+            <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+              <strong>Encoder-decoder vs. decoder-only methods for motion
+              forecasting.</strong> In contrast to existing works, which use an
+              encoder-decoder architecture, DONUT uses a unified, autoregressive
+              model to process agents' historical and future trajectories. This
+              allows it to predict trajectories at different timesteps in a
+              consistent manner and receive up-to-date information of relevant
+              scene elements, improving its performance.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h2 class="title is-3">Method</h2>
+          <div class="image-container has-text-centered">
+            <img src="static/img/DONUT_architecture_overview.webp" alt="DONUT architecture overview." style="max-width: 100%; height: auto" />
+            <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+              <strong>DONUT architecture overview.</strong> Previously predicted
+              sub-trajectories are fed through a proposer module to make a
+              proposal prediction
+              (<img 
+                src="static/svg/arrow_black.svg"
+                width="24" 
+                height="12" 
+                style="vertical-align: middle;">)
+              and an overprediction
+              (<img 
+                src="static/svg/arrow_grey.svg"
+                width="24" 
+                height="12" 
+                style="vertical-align: middle;">).
+              The reference point for all relative encodings is then moved to
+              the endpoint of the proposed trajectory (from
+              <span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #57ab27;
+                border: 1px solid #57ab27;
+                border-radius: 50%;
+              "></span>
+              to 
+              <span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #ffed00;
+                border: 1px solid #ffed00;
+                border-radius: 50%;
+              "></span>)
+              Next, the refiner predicts offsets which are added to the proposed
+              trajectories to obtain the final predicted sub-trajectory and
+              overprediction. Before using the predicted sub-trajectory as input
+              to the next decoder step, the reference point is updated to the
+              refined endpoint again (from
+              <span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #ffed00;
+                border: 1px solid #ffed00;
+                border-radius: 50%;
+              "></span>
+              to
+              <span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #f6a800;
+                border: 1px solid #f6a800;
+                border-radius: 50%;
+              "></span>). 
+            </figcaption>
+          </div>
+          <br>
+          <div class="image-container has-text-centered">
+            <img src="static/img/DONUT_proposer_architecture.webp" alt="DONUT proposer architecture." style="max-width: 100%; height: auto" />
+            <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+              <strong>Proposer architecture.</strong> The input sub-trajectory
+              is first tokenized relative to the reference point (<span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #57ab27;
+                border: 1px solid #57ab27;
+                border-radius: 50%;
+              "></span>).
+              Then, the tokens attend to (1) sub-trajectory tokens from previous
+              decoder steps, (2) map tokens, (3) nearby agents, and (4) other
+              modes of the same agent. All attention operations use relative
+              positional encodings based on the current reference point (<span style="
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: #57ab27;
+                border: 1px solid #57ab27;
+                border-radius: 50%;
+              "></span>).
+              Finally, a detokenizer outputs the next sub-trajectory and an
+              overprediction. The refiner model has the exact same architecture,
+              only the inputs and outputs differ.
+            </figcaption>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h2 class="title is-3">Quantitative Results</h2>
+        </div>
+      </div>
+      <div class="columns is-centered is-6" style="display: flex; justify-content: center;">
+        <div class="column has-text-centered" style="flex-basis: 62%; max-width: 62%;">
+          <img src="static/img/DONUT_ablation.webp" />
+          <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+            <strong>Ablation study.</strong> We demonstrate the effectiveness
+            of (1) using our decoder-only approach instead the encoder-decoder
+            baseline, (2) the overprediction objective, and (3) the refinement
+            module. Evaluation on the Argoverse2 val set.
+          </figcaption>
+        </div>
+        <div class="column has-text-centered" style="flex-basis: 38%; max-width: 38%;">
+          <img src="static/img/DONUT_prediction_horizons.webp" />
+          <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+            <strong>Performance at different prediction horizons.</strong>
+            Compared to the encoder-decoder baseline, our decoder-only
+            approach makes more accurate predictions at longer prediction
+            horizons.
+          </figcaption>
+        </div>
+      </div>
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <div class="image-container has-text-centered">
+            <img src="static/img/DONUT_sota.webp" style="max-width: 100%; height: auto" />
+            <figcaption style="font-size: 0.9em; margin-top: 10px; text-align: left">
+              <strong>Comparison to state of the art.</strong> We compare to
+              published methods on the test set of the Argoverse 2 leaderboard,
+              and demonstrate that DONUT achieves state-of-the-art performance
+              on the main b-minFDE<sub>6</sub> metric. * Denotes the use of
+              model ensembling. 
+            </figcaption>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="column has-text-centered">
+        <h2 class="title is-3">BibTeX</h2>
+      </div>
+      <div style="position: relative">
+        <pre><code id="bibtex">@article{knoche2025donut,
+  title   = {{DONUT: A Decoder-Only Model for Trajectory Prediction}},
+  author  = {Knoche, Markus and de Geus, Daan and Leibe, Bastian},
+  journal = {arXiv preprint},
+  year    = {2025}
+}</code></pre>
+        <button onclick="copyToClipboard()" style="
+              position: absolute;
+              top: 10px;
+              right: 10px;
+              background-color: #f3f4f6;
+              border: 1px solid #d1d5db;
+              border-radius: 5px;
+              padding: 5px 10px;
+              cursor: pointer;
+            ">
+          <span style="display: flex; align-items: center; gap: 5px">
+            <i class="far fa-copy has-text-grey" id="bibtex-copy-icon"></i>
+            Copy
+          </span>
+        </button>
+      </div>
+      <script>
+        function copyToClipboard() {
+          const codeBlock = document.getElementById("bibtex").innerText;
+          navigator.clipboard.writeText(codeBlock).then(
+            () => {
+              const icon = document.getElementById("bibtex-copy-icon");
+              icon.classList.remove("far", "fa-copy", "has-text-grey");
+              icon.classList.add("fas", "fa-check", "has-text-success");
+            },
+            (err) => alert("Failed to copy: " + err)
+          );
+        }
+      </script>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content has-text-centered">
+            <p>
+              This website is licensed under
+              <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. It is based on
+              the
+              <a href="https://nerfies.github.io/">Nerfies website</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+
+</html>
