@@ -1,5 +1,7 @@
 # DONUT: A Decoder-Only Model for Trajectory Prediction
 
+**ICCV 2025**
+
 [[`arXiv`](https://arxiv.org/abs/2506.06854)] [[`Project Page`](https://vision.rwth-aachen.de/DONUT)] [[`BibTeX`](#Citation)]
 
 Code will follow soon
