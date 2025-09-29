@@ -2,7 +2,7 @@
 
 **ICCV 2025**
 
-[arXiv](https://arxiv.org/abs/2506.06854) | [Project Page](https://vision.rwth-aachen.de/DONUT) | [BibTeX](#Citation)
+[arXiv](https://arxiv.org/abs/2506.06854) | [Project Page](https://vision.rwth-aachen.de/DONUT) | [YouTube](https://www.youtube.com/watch?v=6EwE89CN4Ns) | [BibTeX](#Citation)
 
 [Markus Knoche](https://scholar.google.com/citations?user=Kx4v8IMAAAAJ)<sup>1</sup>, [Daan de Geus](https://scholar.google.com/citations?hl=de&user=4gX3HRoAAAAJ)<sup>1,2</sup>, [Bastian Leibe](https://scholar.google.com/citations?hl=de&user=ZcULDB0AAAAJ)<sup>1</sup>
 
