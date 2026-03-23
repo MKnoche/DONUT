@@ -64,7 +64,8 @@ class DonutLayer(nn.Module):
     def forward(
         self, x_pos, x_head, x_type, x_mask, x_batch, pred_step,
         pl_x, pl_pos, pl_head, pl_batch,
-        proposed=None, past=None, feature_input=None
+        proposed=None, past=None, feature_input=None,
+        eps=1e-4
     ):
         if past is not None:
             past_temps, past_pos, past_head, past_mask = past
@@ -169,8 +170,8 @@ class DonutLayer(nn.Module):
             xs['pos'] = torch.cumsum(xs['pos'], dim=3)
             xs['head'] = torch.cumsum(0.3*torch.tanh(xs['head']), dim=3)
 
-        xs['scale'] = 1 + elu(xs['scale'])
-        xs['conc'] = 1 + elu(xs['conc'])
+        xs['scale'] = (1 + elu(xs['scale'])).clamp(min=eps)
+        xs['conc'] = (1 + elu(xs['conc'])).clamp(min=eps)
 
         xs['pos'], xs['head'] = local_to_global(
             xs['pos'], xs['head'], tok_pos_m, tok_head_m)
